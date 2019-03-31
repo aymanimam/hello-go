@@ -2,9 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/aymanimam/hello-go/gopherdojo/slide302"
+	"github.com/aymanimam/hello-go/gopherdojo/slide331/server"
 )
 
+func main() {
+	server.StartServer()
+}
+
+// Old tests
 func ConcatStr(s1, s2 string) string {
 	return s1 + s2
 }
@@ -20,12 +25,4 @@ func PrintOddEven() {
 			fmt.Printf("Error!")
 		}
 	}
-}
-
-func main() {
-	//fmt.Println(stringutil.Reverse("!oG ,olleH"))
-	//fmt.Println(ConcatStr("Hello", ", GOPHER DOJO"))
-	//PrintOddEven()
-
-	slide302.StartServer()
 }
