@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	"errors"
+	"encoding/json"
+	"github.com/aymanimam/hello-go/gopherdojo/slide331/errors"
 	"log"
 	"net/http"
 	"runtime"
@@ -20,17 +21,24 @@ func (r *Recovery) ServeNext(h http.Handler) http.Handler {
 			if r != nil {
 				switch t := r.(type) {
 				case string:
-					err = errors.New(t)
+					err = errors.NewOmikujiException(t, errors.OmikujiRecoveryErrorCode) // errors.New(t)
 				case error:
-					err = t
+					err = errors.NewOmikujiException(t.Error(), errors.OmikujiRecoveryErrorCode) // t
 				default:
-					err = errors.New("unknown error")
+					err = errors.NewOmikujiException("unknown error", errors.OmikujiRecoveryUnknownErrorCode) // errors.New("unknown error")
 				}
+
 				// log the error
 				stack := make([]byte, 1024*8)
 				stack = stack[:runtime.Stack(stack, false)]
 				log.Printf(panicText, err, stack)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+
+				// Return error response
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusInternalServerError)
+				if jsonErr := json.NewEncoder(w).Encode(err); jsonErr != nil {
+					log.Fatal(jsonErr)
+				}
 			}
 		}()
 		h.ServeHTTP(w, r)

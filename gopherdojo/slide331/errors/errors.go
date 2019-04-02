@@ -3,14 +3,16 @@ package errors
 import "fmt"
 
 const (
-	OmikujiErrorCode        = "100"
-	OmikujiServiceErrorCode = "101"
-	OmikujiServerErrorCode  = "102"
+	OmikujiErrorCode                = "100"
+	OmikujiServiceErrorCode         = "101"
+	OmikujiServerErrorCode          = "102"
+	OmikujiRecoveryErrorCode        = "103"
+	OmikujiRecoveryUnknownErrorCode = "104"
 )
 
 type OmikujiException struct {
-	Message string
-	Code    string
+	Message string `json:"message"`
+	Code    string `json:"code"`
 }
 
 func (e *OmikujiException) Error() string {

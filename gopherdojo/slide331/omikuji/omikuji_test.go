@@ -52,29 +52,15 @@ func TestAllOmikujisIsSingleton(t *testing.T) {
 func TestGetRandom(t *testing.T) {
 	randomizer := GetOmikujiRandomizer()
 	omikuji := randomizer.GetRandom(1, 4)
-	if !contains(omikujis[1:4], omikuji) {
+	if !Contains(omikujis[1:4], omikuji) {
 		t.Error(`This omikuji [`, omikuji, `] is not expected`)
 	}
 }
 
 func TestGetRandomInvalidArgs(t *testing.T) {
-	func() {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Errorf("TestGetNextOmikujiNilConfigObj should have panicked!")
-			}
-		}()
+	AssertPanic(t, "GetOmikujiRandomizer should have panicked!", func() {
 		// This function should cause a panic
 		randomizer := GetOmikujiRandomizer()
 		randomizer.GetRandom(-1, 4)
-	}()
-}
-
-func contains(s []Omikuji, o Omikuji) bool {
-	for _, a := range s {
-		if a.Text == o.Text {
-			return true
-		}
-	}
-	return false
+	})
 }

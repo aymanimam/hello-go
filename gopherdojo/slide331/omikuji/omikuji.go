@@ -16,7 +16,7 @@ type Randomizer interface {
 	GetNoDaikichiMin() int
 }
 
-// Types
+// Types and implementations
 type Omikuji struct {
 	Text string `json:"omikuji"`
 }

@@ -11,40 +11,41 @@ type PeriodChecker interface {
 	WithinThePeriod(t time.Time) bool
 }
 
-// Types
+type Dispatcher interface {
+	GetNextOmikuji() Omikuji
+}
+
+// Types and implementations
 type PeriodicDate struct {
 	Month time.Month
 	Day   int
 }
 
-type Period struct {
+type period struct {
 	From PeriodicDate
 	To   PeriodicDate
 }
 
-func (p *Period) WithinThePeriod(t time.Time) bool {
-	m := t.Month()
-	d := t.Day()
+func (p *period) WithinThePeriod(t time.Time) bool {
+	layout := "2006-01-02"
+	fromStr := fmt.Sprintf("%d-%02d-%02d", time.Now().Year(), p.From.Month, p.From.Day)
+	toStr := fmt.Sprintf("%d-%02d-%02d", time.Now().Year(), p.To.Month, p.To.Day)
 
-	if m >= p.From.Month && m <= p.To.Month {
-		if d >= p.From.Day && d <= p.To.Day {
-			return true
-		}
-	}
+	fromTime, _ := time.Parse(layout, fromStr)
+	toTime, _ := time.Parse(layout, toStr)
 
-	return false
+	fromTime = fromTime.Add(-24 * time.Hour)
+	toTime = toTime.Add(24 * time.Hour)
+
+	return t.After(fromTime) && t.Before(toTime)
 }
 
-type Dispatcher interface {
-	GetNextOmikuji() Omikuji
-}
-
-type Service struct {
+type service struct {
 	PeriodChecker PeriodChecker
 	Randomizer    Randomizer
 }
 
-func (s *Service) GetNextOmikuji() Omikuji {
+func (s *service) GetNextOmikuji() Omikuji {
 	if s.Randomizer == nil || s.PeriodChecker == nil {
 		msg := fmt.Sprintf("One or more invalid arguments! [Randomizer: %v][PeriodChecker: %v]",
 			s.Randomizer, s.PeriodChecker)
@@ -72,30 +73,17 @@ func GetPeriodChecker(fromDate, toDate PeriodicDate) PeriodChecker {
 			errors.ThrowOmikujiException(msg, errors.OmikujiServiceErrorCode)
 		}
 	}
-	return &Period{From: fromDate, To: toDate}
+	return &period{From: fromDate, To: toDate}
 }
 
 // Get Dispatcher
 func GetOmikujiDispatcher(pc PeriodChecker) Dispatcher {
-	return &Service{
+	if pc == nil {
+		msg := fmt.Sprintf("Invalid arguments! [PeriodChecker: %v]", pc)
+		errors.ThrowOmikujiException(msg, errors.OmikujiServiceErrorCode)
+	}
+	return &service{
 		pc,
 		GetOmikujiRandomizer(),
 	}
 }
-
-// Business logic
-/*func GetNextOmikuji(r Randomizer, pc PeriodChecker) Omikuji {
-	if r == nil || pc == nil {
-		msg := fmt.Sprintf("One or more invalid arguments! [Randomizer: %v][PeriodChecker: %v]", r, pc)
-		errors.ThrowOmikujiException(msg, errors.OmikujiServiceErrorCode)
-	}
-
-	currentTime := time.Now()
-
-	if pc.WithinThePeriod(currentTime) {
-		return r.GetRandom(r.GetDaikichiMin(), r.GetMax())
-	} else {
-		return r.GetRandom(r.GetNoDaikichiMin(), r.GetMax())
-	}
-}
-*/
