@@ -7,7 +7,6 @@ import (
 var omikujis = []Omikuji{
 	{"大吉"},
 	{"吉"},
-	{"吉"},
 	{"中吉"},
 	{"小吉"},
 	{"半吉"},
@@ -24,7 +23,7 @@ func TestGetAllOmikujis(t *testing.T) {
 	randomizer := GetOmikujiRandomizer()
 	omikujiCount := randomizer.GetMax()
 	if omikujiCount != len(omikujis) {
-		t.Error(`omikujiCount = `, omikujiCount, `, omikujiCount != 13`)
+		t.Error(`omikujiCount = `, omikujiCount, `, omikujiCount != 12`)
 	}
 }
 

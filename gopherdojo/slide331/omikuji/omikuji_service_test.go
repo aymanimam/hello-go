@@ -92,51 +92,53 @@ func TestPeriod_WithinThePeriod(t *testing.T) {
 	}
 }
 
-// GetNextOmikuji
-// GetOmikujiDispatcher
+func TestGetOmikujiDispatcher(t *testing.T) {
+	fromDate := PeriodicDate{Month: time.January, Day: 1}
+	toDate := PeriodicDate{Month: time.March, Day: 1}
+	pc := GetPeriodChecker(fromDate, toDate)
 
-/*
-func TestGetNextOmikujiNilArgs(t *testing.T) {
-	func() {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Errorf("TestGetNextOmikujiNilConfigObj should have panicked!")
-			}
-		}()
-		// This function should cause a panic
-		GetNextOmikuji(nil, nil)
-	}()
+	dispatcher := GetOmikujiDispatcher(pc, &MockRandomizer{})
+	if dispatcher == nil {
+		t.Error(`Dispatcher is expected not to be nil!`)
+	}
 }
 
-func TestGetNextOmikujiWithDaikichi(t *testing.T) {
+func TestGetOmikujiDispatcherNilArgs(t *testing.T) {
+	AssertPanic(t, "GetOmikujiDispatcher should have panicked!", func() {
+		GetOmikujiDispatcher(nil, nil)
+	})
+}
+
+func TestService_GetNextOmikujiWithDaikichi(t *testing.T) {
 	currentTime := time.Now()
 	currentMonth := currentTime.Month()
 	currentDay := currentTime.Day()
 
 	fromDate := PeriodicDate{Month: currentMonth, Day: currentDay}
 	toDate := PeriodicDate{Month: currentMonth, Day: currentDay}
-	period := &Period{From: fromDate, To: toDate}
+	pc := GetPeriodChecker(fromDate, toDate)
 
-	omikuji := GetNextOmikuji(&MockRandomizer{}, period)
+	dispatcher := GetOmikujiDispatcher(pc, &MockRandomizer{})
 
+	omikuji := dispatcher.GetNextOmikuji()
 	if omikuji.Text != "大吉" {
 		t.Error(`Expected "大吉" omikuji! But was [`, omikuji.Text, `]`)
 	}
 }
 
-func TestGetNextOmikujiNoDaikichi(t *testing.T) {
+func TestService_GetNextOmikujiWithNoDaikichi(t *testing.T) {
 	futureTime := time.Now().AddDate(0, 1, 0)
 	futureMonth := futureTime.Month()
 	futureDay := futureTime.Day()
 
 	fromDate := PeriodicDate{Month: futureMonth, Day: futureDay}
 	toDate := PeriodicDate{Month: futureMonth, Day: futureDay}
-	period := &Period{From: fromDate, To: toDate}
+	pc := GetPeriodChecker(fromDate, toDate)
 
-	omikuji := GetNextOmikuji(&MockRandomizer{}, period)
+	dispatcher := GetOmikujiDispatcher(pc, &MockRandomizer{})
 
+	omikuji := dispatcher.GetNextOmikuji()
 	if omikuji.Text != "吉" {
 		t.Error(`Expected "吉" omikuji! But was [`, omikuji.Text, `]`)
 	}
 }
-*/

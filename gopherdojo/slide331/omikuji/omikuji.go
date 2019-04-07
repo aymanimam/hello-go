@@ -21,9 +21,7 @@ type Omikuji struct {
 	Text string `json:"omikuji"`
 }
 
-type AllOmikujis struct {
-	omikujis []Omikuji
-}
+type AllOmikujis []Omikuji
 
 func (omikujis *AllOmikujis) GetRandom(min, max int) Omikuji {
 	if min < 0 || max > omikujis.GetMax() || min >= max {
@@ -32,11 +30,11 @@ func (omikujis *AllOmikujis) GetRandom(min, max int) Omikuji {
 	}
 
 	randIndex := min + rand.Intn(max-min)
-	return omikujis.omikujis[randIndex]
+	return (*omikujis)[randIndex]
 }
 
 func (omikujis *AllOmikujis) GetMax() int {
-	return len(omikujis.omikujis)
+	return len(*omikujis)
 }
 
 func (omikujis *AllOmikujis) GetDaikichiMin() int {
@@ -48,7 +46,7 @@ func (omikujis *AllOmikujis) GetNoDaikichiMin() int {
 }
 
 // Singleton all omikujis
-var allOmikujis *AllOmikujis
+var allOmikujis AllOmikujis
 var once sync.Once
 
 // Get all omikujis singleton instance
@@ -57,25 +55,22 @@ func GetOmikujiRandomizer() Randomizer {
 	// http://marcio.io/2015/07/singleton-pattern-in-go/
 	once.Do(func() {
 		// Initialize this var only once
-		allOmikujis = &AllOmikujis{
-			omikujis: []Omikuji{
-				{"大吉"},
-				{"吉"},
-				{"吉"},
-				{"中吉"},
-				{"小吉"},
-				{"半吉"},
-				{"末吉"},
-				{"末小吉"},
-				{"凶"},
-				{"小凶"},
-				{"半凶"},
-				{"末凶"},
-				{"大凶"},
-			},
+		allOmikujis = []Omikuji{
+			{"大吉"},
+			{"中吉"},
+			{"小吉"},
+			{"吉"},
+			{"半吉"},
+			{"末吉"},
+			{"末小吉"},
+			{"凶"},
+			{"小凶"},
+			{"半凶"},
+			{"末凶"},
+			{"大凶"},
 		}
 		// Initialize random generator only once
 		rand.Seed(time.Now().UTC().UnixNano())
 	})
-	return allOmikujis
+	return &allOmikujis
 }

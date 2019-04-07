@@ -23,8 +23,10 @@ func initialize() {
 	fromDate := omikuji.PeriodicDate{Month: time.January, Day: 1}
 	toDate := omikuji.PeriodicDate{Month: time.January, Day: 3}
 	periodChecker := omikuji.GetPeriodChecker(fromDate, toDate)
+	omikujiRandomizer := omikuji.GetOmikujiRandomizer()
+
 	// Initialize omikuji service instance
-	omikujiDispatcher = omikuji.GetOmikujiDispatcher(periodChecker)
+	omikujiDispatcher = omikuji.GetOmikujiDispatcher(periodChecker, omikujiRandomizer)
 }
 
 func omikujiHandler(w http.ResponseWriter, r *http.Request) {

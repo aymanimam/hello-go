@@ -77,13 +77,13 @@ func GetPeriodChecker(fromDate, toDate PeriodicDate) PeriodChecker {
 }
 
 // Get Dispatcher
-func GetOmikujiDispatcher(pc PeriodChecker) Dispatcher {
-	if pc == nil {
-		msg := fmt.Sprintf("Invalid arguments! [PeriodChecker: %v]", pc)
+func GetOmikujiDispatcher(pc PeriodChecker, r Randomizer) Dispatcher {
+	if pc == nil || r == nil {
+		msg := fmt.Sprintf("Invalid arguments! [PeriodChecker: %v][Randomizer: %v]", pc, r)
 		errors.ThrowOmikujiException(msg, errors.OmikujiServiceErrorCode)
 	}
 	return &service{
 		pc,
-		GetOmikujiRandomizer(),
+		r,
 	}
 }
