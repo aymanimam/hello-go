@@ -13,6 +13,7 @@ const panicText = "PANIC: %s\n%s"
 // Recovery middleware
 type Recovery struct{}
 
+// ServeNext implements Middleware interface
 func (r *Recovery) ServeNext(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var err error
@@ -45,6 +46,7 @@ func (r *Recovery) ServeNext(h http.Handler) http.Handler {
 	})
 }
 
+// NewRecovery Returns new recovery middleware
 func NewRecovery() *Recovery {
 	return &Recovery{}
 }

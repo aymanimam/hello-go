@@ -12,9 +12,8 @@ type MockRandomizer struct{}
 func (omikujis *MockRandomizer) GetRandom(min, max int) Omikuji {
 	if min == 0 {
 		return Omikuji{"大吉"}
-	} else {
-		return Omikuji{"吉"}
 	}
+	return Omikuji{"吉"}
 }
 
 func (omikujis *MockRandomizer) GetMax() int {

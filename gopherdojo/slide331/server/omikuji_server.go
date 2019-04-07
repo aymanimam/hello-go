@@ -10,12 +10,6 @@ import (
 	"time"
 )
 
-/**
-use goling
-use gofmt
-use goimport
-*/
-
 var omikujiDispatcher omikuji.Dispatcher
 
 func initialize() {
@@ -41,6 +35,7 @@ func omikujiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// StartServer start omikuji API server
 func StartServer() {
 	// Initialize
 	initialize()

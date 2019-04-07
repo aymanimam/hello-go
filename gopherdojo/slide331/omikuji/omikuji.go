@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Interfaces
+// Randomizer Interface to get random Omikuji from the predefined set of Omikujis
 type Randomizer interface {
 	GetRandom(min, max int) Omikuji
 	GetMax() int
@@ -16,13 +16,15 @@ type Randomizer interface {
 	GetNoDaikichiMin() int
 }
 
-// Types and implementations
+// Omikuji text definition
 type Omikuji struct {
 	Text string `json:"omikuji"`
 }
 
+// AllOmikujis all predefined omikujis
 type AllOmikujis []Omikuji
 
+// GetRandom get a random omikuji
 func (omikujis *AllOmikujis) GetRandom(min, max int) Omikuji {
 	if min < 0 || max > omikujis.GetMax() || min >= max {
 		msg := fmt.Sprintf("Invalid arguments: min=%d, max=%d", min, max)
@@ -33,23 +35,28 @@ func (omikujis *AllOmikujis) GetRandom(min, max int) Omikuji {
 	return (*omikujis)[randIndex]
 }
 
+// GetMax get the max number of omikujis
 func (omikujis *AllOmikujis) GetMax() int {
 	return len(*omikujis)
 }
 
+// GetDaikichiMin get the min index of all omikujis including the "Daikichi"
 func (omikujis *AllOmikujis) GetDaikichiMin() int {
 	return 0
 }
 
+// GetNoDaikichiMin get the min index of all omikujis excluding the "Daikichi"
 func (omikujis *AllOmikujis) GetNoDaikichiMin() int {
 	return 1
 }
 
-// Singleton all omikujis
+// allOmikujis Singleton all omikujis
 var allOmikujis AllOmikujis
+
+// once used for creating a singleton AllOmikujis instance
 var once sync.Once
 
-// Get all omikujis singleton instance
+// GetOmikujiRandomizer Get all omikujis singleton instance
 func GetOmikujiRandomizer() Randomizer {
 	// Using once here for thread safety
 	// http://marcio.io/2015/07/singleton-pattern-in-go/

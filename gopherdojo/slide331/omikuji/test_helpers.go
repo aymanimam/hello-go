@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// Is the given array has the given omikuji
+// Contains Is the given array has the given omikuji
 func Contains(arr []Omikuji, o Omikuji) bool {
 	for _, e := range arr {
 		if e.Text == o.Text {
@@ -14,9 +14,10 @@ func Contains(arr []Omikuji, o Omikuji) bool {
 	return false
 }
 
-// Function under test
+// AssertPanicFunc Function under test
 type AssertPanicFunc func()
 
+// AssertPanic assert that the given function should panic
 func AssertPanic(t *testing.T, failMessage string, function AssertPanicFunc) {
 	func() {
 		defer func() {
